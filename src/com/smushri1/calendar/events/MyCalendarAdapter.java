@@ -36,18 +36,6 @@ public class MyCalendarAdapter extends CursorAdapter{
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 
-		/*if (cursor.moveToFirst()) {
-			   do {
-				   String title = cursor.getString(0);
-					 Date begin = new Date(cursor.getLong(1));
-					 Date end = new Date(cursor.getLong(2));
-					 Boolean allDay = !cursor.getString(3).equals("0");
-					 
-				   Log.d(TAG, "Title: " + title + " Begin: " + begin + " End: " + end +
-						" All Day: " + allDay);
-			}while(cursor.moveToNext());
-		  }	  */ 
-		
 		String title = cursor.getString(0);
 		 Date begin = new Date(cursor.getLong(1));
 		 Date end = new Date(cursor.getLong(2));

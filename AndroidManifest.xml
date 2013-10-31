@@ -42,7 +42,6 @@
    		        <action android:name="android.intent.action.BOOT_COMPLETED"/>
    		    </intent-filter>
    		</receiver>
-       <receiver android:name="com.smushri1.calendarsample.AlarmManagerBroadcastReceiver"></receiver>
        <receiver android:name="com.smushri1.calendarsample.RingerBroadcastReceiver"></receiver>
        <receiver android:name="com.smushri1.calendarsample.UnScheduleBroadcastReceiver"></receiver>
     

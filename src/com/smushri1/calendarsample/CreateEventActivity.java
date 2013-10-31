@@ -1,6 +1,5 @@
 package com.smushri1.calendarsample;
 
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -15,11 +14,9 @@ import android.view.View;
 public class CreateEventActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 	static final String DEBUG_TAG = "CreateEventActivity";
-	static final String TAG = "Edit_TimelineEventActivity";
-
+	
 	SectionFragmentPagerAdapter mSectionsFragPagerAdapter;
 	static ViewPager mViewPager;
-	ViewPager mBottomViewPager;
 	static DataBean bdata;
 
 	
@@ -56,13 +53,11 @@ public class CreateEventActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		
-		Log.d(DEBUG_TAG, "onCreate END By creating upper Tabs");
-		
 		bdata = new DataBean();
 	}
 	
 
-	@Override
+		@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.add_event, menu);
@@ -94,8 +89,6 @@ public class CreateEventActivity extends FragmentActivity implements
 	public void showNextView(View v) {
 		
 		GeneralTabFragment.bdata.setEventName(GeneralTabFragment.eventName.getText().toString());
-		Log.d("Event Name by DataBEan", " " + GeneralTabFragment.bdata.getEventName());		
-		
 		
 		if(GeneralTabFragment.bdata.getEventName() == null)
 		{	AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -178,11 +171,14 @@ public class CreateEventActivity extends FragmentActivity implements
 	         alert11.show();
 		}
 		
+		// show ToggleTabFragment
 		CreateEventActivity.mViewPager.setCurrentItem(1);
 	}
 	
-	public void showCancelView(View v) {		
 	
+	
+	public void showCancelView(View v) 
+	{		
 		finish();
 	}
 

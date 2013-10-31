@@ -3,7 +3,6 @@ package com.smushri1.calendarsample;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
 import com.smushri1.calendarsample.GeneralTabFragment;
 import com.smushri1.calendarsample.ToggleTabFragment;
@@ -23,8 +22,6 @@ public class SectionFragmentPagerAdapter extends FragmentPagerAdapter{
 
 	@Override
 	public Fragment getItem(int position) {
-		Log.d(DEBUG_TAG, "getItem()");
-
 		switch (position) {
 		case 0:
 			return fragGeneral;
@@ -44,8 +41,6 @@ public class SectionFragmentPagerAdapter extends FragmentPagerAdapter{
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		Log.d(DEBUG_TAG, "getPageTitle()");
-		//Locale loc = Locale.getDefault();
 		switch (position) {
 		case 0:
 			//return fragGeneral.getString(R.string.general_tab).toUpperCase(loc);

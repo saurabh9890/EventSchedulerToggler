@@ -36,17 +36,19 @@ public class GeneralTabFragment extends Fragment {
 	static final String DATE_TAG = "datePicker";
 	static final String DAY_TAG = "dayPicker";
 	
-	View rootView;
-	static int choice;
 	protected static final String ID_EXTRA = "com.smushri1.calendarsample.C_ID";
+	protected static final String EXTRA_BOOLEAN = "com.smushri1.calendarsample.EDIT";
 	public static final String CHOICE_SELECTED = "com.smushri1.calendarsample.choice_selected";
+	
+	View rootView;
+	static int choice, edit_id;
 	static Button bfrom_date, bto_date, bstart_time, bend_time, bday_picker, b_next, b_cancel, b_cal_event;
 	static EditText eventName;
 	private static ArrayList<CharSequence> mSelectedItems;
 	public static int prevData = 0; // 0=NewData & 1=EditData
 	private static int pressedBtn = -1; // 0=from & 1=to
 	static boolean[] checked;
-	static boolean isRepeatEvent;
+	static boolean isRepeatEvent, isEditEvent;
 	static int days;
 	static CharSequence[] daysOfWeek = new CharSequence[]{"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 	static String displayName;
@@ -57,6 +59,7 @@ public class GeneralTabFragment extends Fragment {
 	static Bundle extra;
 	static Context context;
 	static Cursor cursor, eventcursor;
+	EditPrevData edited;
 	static int position;
 	static String id;
 	
@@ -71,40 +74,36 @@ public class GeneralTabFragment extends Fragment {
 		
 		extra = getActivity().getIntent().getExtras();
 		choice = extra.getInt(CHOICE_SELECTED);
-		
-		Log.d(DEBUG_TAG, "onCreateView --> Intent putextra value received: choice = " + choice);
+		isEditEvent = extra.getBoolean(EXTRA_BOOLEAN);
 		
 		if(choice == 0)
 		{
-		Log.d(DEBUG_TAG, "onCreateView() with choice = 0");
-		rootView = inflater.inflate(R.layout.general_tab_create,
+			rootView = inflater.inflate(R.layout.general_tab_create,
 				container, false);
 
-		return rootView;
+			return rootView;
 		}
 		else{
-			Log.d(DEBUG_TAG, "onCreateView() with choice = 1");
 			rootView = inflater.inflate(R.layout.choose_cal_event,
 					container, false);
 
 			return rootView;
 		}
 	}
+	
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
-		
+				
 	if(choice == 0)
 	 {
-		Log.d("DEBUG_TAG", " onActivityCreated --> with choice = 0");
-		
 		checked = new boolean[daysOfWeek.length];
 		mSelectedItems = new ArrayList<CharSequence>(); // Where we track the selected items
 		
 		/* DataBEan class object */
 		bdata = new DataBean();	
+		edited = new EditPrevData();
 		
 		isRepeatEvent = false;
 		bfrom_date = (Button) rootView.findViewById(R.id.button_from_date);
@@ -156,21 +155,20 @@ public class GeneralTabFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-			//	isRepeatEvent = true;
 				new DayPickerDialog().show(getActivity().getFragmentManager(), DAY_TAG);
 			}
 		});
 		
 		eventName = (EditText)rootView.findViewById(R.id.enter_event_name);
 		
-		if((getActivity().getIntent().getExtras())!= null)
+		if(isEditEvent)
 		{  
+			// Edit event --> Initializing previous data
 			prevData = 1;
-			prevData();	
+			initPreviousData();	
 		}
 		
 	 }else{
-		 Log.d("DEBUG_TAG", " onActivityCreated --> with choice = 1");
 			
 		 b_cal_event = (Button)rootView.findViewById(R.id.button_choose_cal_event);
 		 b_cal_event.setOnClickListener(new View.OnClickListener() {
@@ -228,7 +226,6 @@ public class GeneralTabFragment extends Fragment {
 	public void readCalData(int which)
 	{
 		 eventcursor = localCalendar.readEvents(getActivity(), which+1);
-		
 		 AdapterCalEvent calAdapter = new AdapterCalEvent(getActivity(), eventcursor, false);
 			
 		 AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
@@ -276,91 +273,32 @@ public class GeneralTabFragment extends Fragment {
 	
 	
 	@SuppressWarnings("static-access")
-	public void prevData() {
+	public void initPreviousData() {
 		
-		Log.d(DEBUG_TAG, "prevdata = 1");
-		prevData = 1;
 		try{
 			extra = getActivity().getIntent().getExtras();	
 			position = extra.getInt(ID_EXTRA, 1);
-			Log.d(TAG, " checking intent position value : %s  " + position);
+			
 			} catch(Exception e) 
 			  { e.printStackTrace(); }
 		
-		statusData = new StatusData(getActivity());
-		statusData.open();
-		cursor = statusData.query();
-		cursor.moveToPosition(position);		
+		bdata = edited.getPreviousData(getActivity(), rootView, position);
 		
-		Log.d(TAG, " Getting position = cursor data:  " + cursor.getString(cursor.getColumnIndex(statusData.C_ID)));
-		Log.d(TAG, " Getting position = cursor data:  " + cursor.getString(cursor.getColumnIndex(statusData.C_EVENT_NAME)));
-		
-		id = cursor.getString(cursor.getColumnIndex(statusData.C_ID));
-		
-		eventName = (EditText)rootView.findViewById(R.id.enter_event_name);
-		bstart_time = (Button)rootView.findViewById(R.id.button_start_time);
-		bend_time = (Button) rootView.findViewById(R.id.button_end_time);
-		bfrom_date = (Button) rootView.findViewById(R.id.button_from_date);
-		bto_date = (Button) rootView.findViewById(R.id.button_to_date);
-		bday_picker = (Button) rootView.findViewById(R.id.button_repeat_event);
-		
-		
-		String evName = cursor.getString(cursor.getColumnIndex(statusData.C_EVENT_NAME));
-		eventName.setText("" + evName);
-		
-		String startTime = cursor.getString(cursor.getColumnIndex(statusData.C_START_TIME));
-		bstart_time.setText("" + startTime);
-		
-		String endTime = cursor.getString(cursor.getColumnIndex(statusData.C_END_TIME));
-		bend_time.setText("" + endTime);
-		
-		String fromDate = cursor.getString(cursor.getColumnIndex(statusData.C_FROM_DATE));
-		bfrom_date.setText("" + fromDate);
-		
-		String toDate = cursor.getString(cursor.getColumnIndex(statusData.C_TO_DATE));
-		bto_date.setText("" + toDate);
-		
-		String multiDay = cursor.getString(cursor.getColumnIndex(statusData.C_REPEAT_EVENT));
-		bday_picker.setText("" + multiDay);
-		
-		String ringer = cursor.getString(cursor.getColumnIndex(statusData.C_RINGER_MODE));
-		int media_vol = cursor.getInt(cursor.getColumnIndex(statusData.C_MEDIA_VOL));
-		int alarm_vol = cursor.getInt(cursor.getColumnIndex(statusData.C_ALARM_VOL));
-		int wifi = cursor.getInt(cursor.getColumnIndex(statusData.C_WIFI_MODE));
-		int blue = cursor.getInt(cursor.getColumnIndex(statusData.C_BLUETOOTH_MODE));
-		int data = cursor.getInt(cursor.getColumnIndex(statusData.C_DATA_MODE));
-		
-		bdata.setEventName(evName);
-		bdata.setStartTime(startTime);
-		bdata.setEndTime(endTime);
-		bdata.setFromDate(fromDate);
-		bdata.setToDate(toDate);
-		bdata.setRepeatEvent(multiDay);
-		
-		bdata.setRingerMode(ringer);
-		bdata.setMediaVol(media_vol);
-		bdata.setAlarmVol(alarm_vol);
-		bdata.setWifi(wifi);
-		bdata.setBluetooth(blue);
-		bdata.setData(data);
-			
+		String multiDay = bdata.getRepeatEvent();
 		mSelectedItems.clear();
+		
 		if(multiDay != null)
 		{
 			StringTokenizer token = new StringTokenizer(multiDay," ");
 			while(token.hasMoreElements()){
 				mSelectedItems.add(token.nextToken());
-				Log.d("Arrylist Items", "ArrayList mSelectedItems: " + mSelectedItems);
 				}
 			checked = parse(mSelectedItems);
-		}
-		
-		statusData.close();
+		}		
 }
 	
 
 	private boolean[] parse(ArrayList<CharSequence> mItems) {
-	Log.d("Boolean checked", "marking checked day with prev data: " + mItems);	
 	
 		if(mItems.contains("Monday")){
 			checked[0] = true;
@@ -402,7 +340,6 @@ public class GeneralTabFragment extends Fragment {
 			// if Creating New event, then new Data	
 			
 			if(prevData == 0){
-				Log.d("DayPicker", "prevData == 0");
 			builder.setTitle(R.string.pick_toppings)
 					.setMultiChoiceItems(daysOfWeek, checked,
 							new DialogInterface.OnMultiChoiceClickListener() {
@@ -419,7 +356,6 @@ public class GeneralTabFragment extends Fragment {
 										// array, remove it
 										mSelectedItems.remove(daysOfWeek[which]);
 										checked[which] = mSelectedItems.contains(daysOfWeek[which]);
-										Log.d("DayPicker", "Remaining items:  " + mSelectedItems);
 									}	
 								}
 							})
@@ -440,8 +376,7 @@ public class GeneralTabFragment extends Fragment {
 
 										// DataBean class
 										bdata.setRepeatEvent(bday_picker.getText().toString());
-										Log.d("Repeat Event data by Bean class",
-												" %s:  " + bdata.getRepeatEvent());
+										
 									}
 								}
 							})
@@ -458,9 +393,7 @@ public class GeneralTabFragment extends Fragment {
 			
 			
 	// if Editing an event, then fetched previous Data from DB	
-			
 			if(prevData == 1){
-				Log.d("DayPicker", "prevData == 1 !! prevData is enabled");
 				builder.setTitle(R.string.pick_toppings)
 						.setMultiChoiceItems(daysOfWeek, checked,
 								new DialogInterface.OnMultiChoiceClickListener() {
@@ -477,7 +410,7 @@ public class GeneralTabFragment extends Fragment {
 											// array, remove it
 											mSelectedItems.remove(daysOfWeek[which]);
 											checked[which] = mSelectedItems.contains(daysOfWeek[which]);
-											Log.d("onDayPicker", "Remaining items:  " + mSelectedItems);
+								
 										}	
 									}
 								})
@@ -499,8 +432,7 @@ public class GeneralTabFragment extends Fragment {
 
 											// DataBean class
 											bdata.setRepeatEvent(bday_picker.getText().toString());
-											Log.d("Repeat Event data by Bean class",
-													" %s:  " + bdata.getRepeatEvent());
+										
 										}
 									}
 								})
@@ -540,7 +472,6 @@ public class GeneralTabFragment extends Fragment {
 			month = c.get(Calendar.MONTH);
 			day = c.get(Calendar.DAY_OF_MONTH);
 		
-			
 		// Create a new instance of DatePickerDialog and return it
 			return new DatePickerDialog(getActivity(), this, year, month, day);
 		}
@@ -552,14 +483,12 @@ public class GeneralTabFragment extends Fragment {
 						.append("-").append(d).append("-").append(y)
 						.append(" "));
 				bdata.setFromDate(bfrom_date.getText().toString());
-				Log.d("From Date data by Bean class",
-						" %s:  " + bdata.getFromDate());
+			
 			} else if (pressedBtn == 1) {
 				bto_date.setText(new StringBuilder().append(m + 1).append("-")
 						.append(d).append("-").append(y).append(" "));
 				bdata.setToDate(bto_date.getText().toString());
-				Log.d("To Date data by Bean class",
-						" %s:  " + bdata.getToDate());
+				
 			}
 		}	
 	}
@@ -584,22 +513,18 @@ public class GeneralTabFragment extends Fragment {
 	                @Override
 	                public void onTimeSet(TimePicker timePicker, int hour, int minute) {
 	                	// Do something with the time chosen by the user
-	                	
-	        			if (pressedBtn == 0) {
+	                	if (pressedBtn == 0) {
 	        				bstart_time.setText(new StringBuilder().append(pad(hour))
 	        						.append(":").append(pad(minute)).append(" "));
 
 	        				bdata.setStartTime(bstart_time.getText().toString());
-	        				Log.d("Start Time data by Bean class",
-	        						" %s:  " + bdata.getStartTime());
-
+	        			
 	        			} else if (pressedBtn == 1) {
 	        				bend_time.setText(new StringBuilder().append(pad(hour))
 	        						.append(":").append(pad(minute)).append(" "));
 
 	        				bdata.setEndTime(bend_time.getText().toString());
-	        				Log.d("End Time data by Bean class",
-	        						" %s:  " + bdata.getEndTime());
+	        			
 	        			}
 	                }
 	            }, hour, minute, DateFormat.is24HourFormat(getActivity()));

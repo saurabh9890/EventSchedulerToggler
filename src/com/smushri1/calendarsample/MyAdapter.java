@@ -36,10 +36,6 @@ public class MyAdapter extends CursorAdapter{
 
 		statusData = new StatusData(context);
 		
-
-	//	if(isData == true)
-		{	
-			
 			String eveName = cursor.getString(cursor.getColumnIndex(statusData.C_EVENT_NAME));
 			String stTime = cursor.getString(cursor.getColumnIndex(statusData.C_START_TIME));
 			String endTime = cursor.getString(cursor.getColumnIndex(statusData.C_END_TIME));
@@ -51,7 +47,6 @@ public class MyAdapter extends CursorAdapter{
 			int wifi = cursor.getInt(cursor.getColumnIndex(statusData.C_WIFI_MODE));
 			int blue = cursor.getInt(cursor.getColumnIndex(statusData.C_BLUETOOTH_MODE));
 			int data = cursor.getInt(cursor.getColumnIndex(statusData.C_DATA_MODE));
-			
 			
 			
 			event_name = (TextView)view.findViewById(R.id.text_event_name);
@@ -67,22 +62,12 @@ public class MyAdapter extends CursorAdapter{
 			repeat_event.setText(multiDay);
 			
 			
-			Log.d("Sau", "Initialising ImageView --> ");
 			ringerView = (ImageView) view.findViewById(R.id.imageView_ringer);
 			alarmView = (ImageView) view.findViewById(R.id.imageView_alarm);
 			bluetoothView = (ImageView) view.findViewById(R.id.imageView_bluetooth);
 			wifiView = (ImageView) view.findViewById(R.id.imageView_wifi);
 			dataView = (ImageView) view.findViewById(R.id.imageView_data);
 			mediaView = (ImageView) view.findViewById(R.id.imageView_media);
-			
-		
-			Log.d("Sau", "alarm_vol --> " + alarm_vol);
-			Log.d("Sau", "media_vol --> " + media_vol);
-			Log.d("Sau", "wifi --> " + wifi);
-			Log.d("Sau", "blue --> " + blue);
-			Log.d("Sau", "data --> " + data);
-			Log.d("Sau", "Ringer --> " + ringer);
-		
 			
 			// Data Usage setImage
 			if(data == 2) // data connected = 2
@@ -133,30 +118,25 @@ public class MyAdapter extends CursorAdapter{
 			if(ringer.equals("Normal"))
 				{
 					//change to normal mode 
-					Log.d(TAG, " Normal Mode");
 					ringerView.setImageResource(R.drawable.phone_iphone);
 				}
 				else if(ringer.equals("Silent"))
 				{
 					//change to silent mode   
-					Log.d(TAG, " Silent Mode");
 					ringerView.setImageResource(android.R.drawable.ic_lock_silent_mode);
 				}
 				else if(ringer.equals("Vibration"))
 				{
-					Log.d(TAG, " Vibration Mode");
 					ringerView.setImageResource(R.drawable.phone_vibration);
 				}
-	      		
-			Log.d("Sau", "ImageView Set <--> Nw Adapter initialising");		
-		}		
+	  	
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 
 		View v = mLayoutInflater.inflate(R.layout.row, parent, false);
-		bindView(v, context, cursor);
+		//bindView(v, context, cursor);
         return v;
 	}
 

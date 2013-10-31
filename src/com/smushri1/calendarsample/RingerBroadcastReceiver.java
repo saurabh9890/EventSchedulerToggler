@@ -45,7 +45,6 @@ public class RingerBroadcastReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		Log.d(TAG, "Welcome OnReceive !!!");
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "PowerManager Acquires lock");
 		wl.acquire();
@@ -70,20 +69,10 @@ public class RingerBroadcastReceiver extends BroadcastReceiver{
 	    intent_type = extras.getString(INTENT_TYPE);
 	    row_ID = extras.getLong(ROW_ID);
 	   
-		Log.d(TAG, "modeID: " + modeID);
-		Log.d(TAG, "mediavol: " + mediavol);
-		Log.d(TAG, "alarmvol: " + alarmvol);
-		Log.d(TAG, "wifi mode: " + wifiState);
-		Log.d(TAG, "bluetoothState: " + bluetoothState);
-		Log.d(TAG, "dataState: " + dataState);
-		Log.d(TAG, "Intent_Type: " + intent_type);
-		Log.d(TAG, "row_ID: " + row_ID);
-		
-		String rowid = String.valueOf(row_ID);
+	    String rowid = String.valueOf(row_ID);
 		
 		if(intent_type.equals("start"))
 		{
-			
 			 StringBuilder str = new StringBuilder();
 			    str.append(mAudioManager.getRingerMode())
 			    .append(":").append(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
@@ -94,18 +83,14 @@ public class RingerBroadcastReceiver extends BroadcastReceiver{
 			    
 			 edit.putString(rowid, str.toString());
 			 edit.commit();
-			 Log.d(TAG, "StringBuilder str: " + str.toString());
-				  
 			 
 			// Mode set Starts here
 			
 			RingerMode(context, modeID);
 			
 			 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mediavol, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE); 
-        	 Log.d(TAG,"--> STREAM_MUSIC volume for START_Intent set successfully !!! <--");
         	 
         	 mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, alarmvol, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-        	 Log.d(TAG,"--> STREAM_ALARM volume for START_Intent set successfully !!! <--");
         	 
         	 
         	 // wifi
@@ -150,12 +135,9 @@ public class RingerBroadcastReceiver extends BroadcastReceiver{
 			RingerMode(context, savedList[0]);
 			
 			 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, savedList[1], AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE); 
-        	 Log.d(TAG,"--> STREAM_MUSIC volume for END_Intent set successfully !!! <--");
         	 
         	 mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, savedList[2], AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-        	 Log.d(TAG,"--> STREAM_ALARM volume for END_Intent set successfully !!! <--");
         	
-        	 
         	 
         	 // wifi
         	 if(savedList[3] == wifi.WIFI_STATE_DISABLED)
@@ -239,7 +221,6 @@ public class RingerBroadcastReceiver extends BroadcastReceiver{
 		 if(mode == mAudioManager.RINGER_MODE_NORMAL)
 			{
 				//change to normal mode 
-				Log.d(TAG, " Normal Mode");
 				mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				Toast.makeText(context, "Normal Mode Activated",
 	                    Toast.LENGTH_LONG).show();
@@ -247,14 +228,12 @@ public class RingerBroadcastReceiver extends BroadcastReceiver{
 			else if(mode == mAudioManager.RINGER_MODE_SILENT)
 			{
 				//change to silent mode   
-				Log.d(TAG, " Silent Mode");
 				mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 				Toast.makeText(context, "Silent Mode Activated",
 	                    Toast.LENGTH_LONG).show();
 			}
 			else if(mode == mAudioManager.RINGER_MODE_VIBRATE)
 			{
-				Log.d(TAG, " Vibration Mode");
 				mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 	    		Toast.makeText(context, "Vibration Mode Activated", 
 	           		 Toast.LENGTH_LONG).show();

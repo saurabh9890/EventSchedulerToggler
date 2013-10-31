@@ -2,7 +2,6 @@ package com.smushri1.calendarsample;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,19 +17,19 @@ public class EditPrevData {
 	
 	static DataBean bdata;
 	static StatusData statusData;
-	static Bundle extra;
-	static Context context;
 	static Cursor cursor;
-	static int position;
 	static String id;
 	
 	@SuppressWarnings("static-access")
-	public static void prevData(Context context, View rootView, Cursor cursor){
+	public static DataBean getPreviousData(Context context, View rootView, int pos){
 		
-		Log.d(DEBUG_TAG, "prevdata");
+		Log.d(DEBUG_TAG, "getPreviousData");
 		
 		bdata = new DataBean();
 		statusData = new StatusData(context);
+		statusData.open();
+		cursor = statusData.query();
+		cursor.moveToPosition(pos);
 		
 		Log.d(TAG, " Getting position = cursor data:  " + cursor.getString(cursor.getColumnIndex(statusData.C_ID)));
 		Log.d(TAG, " Getting position = cursor data:  " + cursor.getString(cursor.getColumnIndex(statusData.C_EVENT_NAME)));
@@ -84,6 +83,7 @@ public class EditPrevData {
 		bdata.setBluetooth(blue);
 		bdata.setData(data);
 		
-	}
-	
+		statusData.close();
+		return bdata;
+	}	
 }

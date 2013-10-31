@@ -28,7 +28,6 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
 	
 	protected static final String ID_EXTRA = "com.smushri1.calendarsample.C_ID";
 	public static final String DELETE_EVENT = "delete_event";
-	//public static int deleteData = 0; // 0=NewData & 1=EditData
 	
 	static DataBean bdata;
 	static StatusData statusData;
@@ -47,12 +46,9 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		Log.d(TAG, "Welcome OnReceive of UnScheduleBroadcastReceiver!!!");
-		
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "PowerManager Acquires lock");
 		wl.acquire();
-		Log.d(TAG, "lock acquired");
 			
 		Bundle extras = intent.getExtras();
 		modeID = extras.getInt(RINGER_MODE_ITEM);
@@ -65,7 +61,6 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
 		if(modeID == mAudioManager.RINGER_MODE_NORMAL)
 		{
 			//change to normal mode 
-			Log.d(TAG, " Normal Mode");
 			mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 			Toast.makeText(context, "Normal Mode Activated",
 					Toast.LENGTH_LONG).show();
@@ -73,14 +68,12 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
 		else if(modeID == mAudioManager.RINGER_MODE_SILENT)
 		{
 			//change to silent mode   
-			Log.d(TAG, " Silent Mode");
 			mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 			Toast.makeText(context, "Silent Mode Activated",
 					Toast.LENGTH_LONG).show();
 		}
 		else if(modeID == mAudioManager.RINGER_MODE_VIBRATE)
 		{
-			Log.d(TAG, " Vibration Mode");
 			mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 			Toast.makeText(context, "Vibration Mode Activated", 
 					Toast.LENGTH_LONG).show();
@@ -88,7 +81,6 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
 		 
 			String repeatEvent = GeneralTabFragment.bday_picker.getText().toString();
 			GeneralTabFragment.bdata.setRepeatEvent(repeatEvent);
-			Log.d("TAG", "Repeat day from POJO: " + GeneralTabFragment.bdata.getRepeatEvent());
 				
 			mItems = new ArrayList<CharSequence>();
 			
@@ -98,7 +90,6 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
 				while(token.hasMoreElements()){
 					mItems.add(token.nextToken());
 				}
-				Log.d("prevGeneralData", "Repeat day from mItems ArrayList: " + mItems);
 			}
 			
 			setUnscheduleRinger(context,mItems);
@@ -111,8 +102,6 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
 	    	statusData.close();
 	    	
 			wl.release();
-			Log.d(TAG, "lock released");
-			
 		
 	}
 	
@@ -138,26 +127,18 @@ public class UnScheduleBroadcastReceiver extends BroadcastReceiver{
     		id = cursor.getString(cursor.getColumnIndex(statusData.C_ID));
     		
     		String multiDay = cursor.getString(cursor.getColumnIndex(statusData.C_REPEAT_EVENT));
-    		Log.d(TAG, " String multiDay from DB: " + multiDay);
-    		
-   		 	
     		rowID = Long.parseLong(id);
-    		Log.d(TAG, "Long rowID: " + rowID);
-   		 
     		
     		bdata = new DataBean();
     		bdata.setRepeatEvent(multiDay);
-			Log.d("TAG", "Repeat day from POJO: " + bdata.getRepeatEvent());
 				
 			mItems = new ArrayList<CharSequence>();
-			
 			if(multiDay != null)
 			{
 				StringTokenizer token = new StringTokenizer(multiDay, " ");
 				while(token.hasMoreElements()){
 					mItems.add(token.nextToken());
 				}
-				Log.d("prevGeneralData", "Repeat day from mItems ArrayList: " + mItems);
 			}
 			
 			setUnscheduleRinger(cont,mItems);

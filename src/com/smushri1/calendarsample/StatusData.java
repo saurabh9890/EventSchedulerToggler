@@ -125,8 +125,6 @@ public class StatusData {
 
 		public DbHelper() {
 			super(context, DB_NAME, null, DB_VERSION);
-			
-		//	 DB_PATH = context.getDatabasePath(DB_NAME).getPath();
 		}
 
 		@Override

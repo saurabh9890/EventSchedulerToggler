@@ -1,14 +1,11 @@
 package com.smushri1.calendarsample;
 
-import com.smushri1.calendar.events.MyCalendarAdapter;
-import com.smushri1.calendar.events.localCalendar;
-
-import android.R.color;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,9 +24,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 	static MyAdapter adapter;
 	StatusData statusData;
 	
-	String str;
 	public static final String CHOICE_SELECTED = "com.smushri1.calendarsample.choice_selected";
 	protected static final String ID_EXTRA = "com.smushri1.calendarsample.C_ID";
+	protected static final String EXTRA_BOOLEAN = "com.smushri1.calendarsample.EDIT";
 	public static final String DELETE_EVENT = "delete_event";
 
 	
@@ -57,20 +54,16 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 	
 		statusData.open();
 		cursor = statusData.query();
-		Log.d(TAG, "onResume cursor: returned from DB");
 		
 		adapter = new MyAdapter(this, cursor, false);
 		list.setAdapter(adapter);
-		list.setBackgroundColor(color.darker_gray);
-		
-		Log.d(TAG, "onResume Adapter added to ListView");
+		list.setBackgroundColor(Color.GRAY);
 		list.setLongClickable(true);
 		list.setOnItemLongClickListener(this);
 	
 		updatelist();
 		statusData.close();
 		
-		Log.d(TAG, "onResume Exit");
 	}
 
 	
@@ -81,6 +74,14 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 		return true;
 	}
 	
+	
+	
+	public void onAddEventClick(View v) {
+		Log.d(TAG, "onAddEventDialog");
+		showAddEventDialog();
+	}
+	
+	
 	public void showAddEventDialog() {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -90,7 +91,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 		
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Log.d(DEBUG_TAG, " you selected " + which + " from list");
 				int choice;
 				
 				switch (which) {
@@ -126,18 +126,12 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 	
 	}
 	
-	
-	public void onAddEventClick(View v) {
-		Log.d(TAG, "onAddEventDialog");
-		showAddEventDialog();
-	}
 
 
 	
 	public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
 		final long ITEM = id;
 		
-		 // Ask the user if they want to delete
 		Log.d(TAG, "onItemLongClicked...!!!");
 		  AlertDialog.Builder confirmation = new AlertDialog.Builder(view.getContext());
 		  confirmation.setTitle("SELECT OPTIONS");
@@ -146,8 +140,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 		  
 		  @Override
 		  public void onClick(DialogInterface dialog, int which) {
-			  Log.d(TAG, "OnClick of delete");
-		    try {
+			 try {
 		    		AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
 					alert.setTitle("DELETE")
 					.setIcon(R.drawable.ic_action_discard_dark)
@@ -185,6 +178,7 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 		    public void onClick(DialogInterface dialog, int which) {   	
 		      Intent intent = new Intent(view.getContext(), CreateEventActivity.class);
 		      intent.putExtra(ID_EXTRA, position);
+		      intent.putExtra(EXTRA_BOOLEAN, true);
 		      startActivity(intent);
 		    }
 		  });

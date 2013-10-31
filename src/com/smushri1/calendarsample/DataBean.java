@@ -13,7 +13,6 @@ public class DataBean {
 		super();
 	}
 
-
 	public String getE_id() {
 		return e_id;
 	}
@@ -141,8 +140,5 @@ public class DataBean {
 		builder.append("]");
 		return builder.toString();
 	}
-
-
-	
 
 }

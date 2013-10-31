@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
-import android.util.Log;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -23,7 +22,7 @@ public class BootReceiver extends BroadcastReceiver {
 	static Cursor curs;
 	static int mode;
 	static String id;
-	static AlarmManagerBroadcastReceiver alarm;
+	static AlarmManagerSender alarm;
 	private static ArrayList<CharSequence> mItems;
 	static Date d1 = null;
     static Date d2 = null;
@@ -35,7 +34,7 @@ public class BootReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 				
-		alarm = new AlarmManagerBroadcastReceiver();
+		alarm = new AlarmManagerSender();
 		mItems = new ArrayList<CharSequence>();
 	
 		statusData = new StatusData(context);
@@ -64,11 +63,7 @@ public class BootReceiver extends BroadcastReceiver {
 	@SuppressWarnings({ "static-access", "unused" })
 	private void getDbData(Context context, Cursor cursor, DataBean bdata) {
 
-		Log.d(TAG, " Getting position = cursor data:  " + cursor.getString(cursor.getColumnIndex(statusData.C_ID)));
-		Log.d(TAG, " Getting position = cursor data:  " + cursor.getString(cursor.getColumnIndex(statusData.C_EVENT_NAME)));
-		
 		id = cursor.getString(cursor.getColumnIndex(statusData.C_ID));
-		
 		String evName = cursor.getString(cursor.getColumnIndex(statusData.C_EVENT_NAME));		
 		String startTime = cursor.getString(cursor.getColumnIndex(statusData.C_START_TIME));
 		String endTime = cursor.getString(cursor.getColumnIndex(statusData.C_END_TIME));
@@ -100,8 +95,6 @@ public class BootReceiver extends BroadcastReceiver {
 		
 		
 		mItems.clear();
-		Log.d("prevGeneralData", "mItems ArrayList items: " + mItems);
-		
 		if(multiDay != null)
 		{
 			StringTokenizer token = new StringTokenizer(multiDay, " ");
@@ -114,10 +107,8 @@ public class BootReceiver extends BroadcastReceiver {
 		String endEvent = new String(new StringBuilder().append(toDate).append(" ").append(endTime));
 		String start_end_event = new String(new StringBuilder().append(fromDate).append(" ").append(endTime));
 		 
-		 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm", Locale.getDefault());
-       
-		try {
+     	try {
 			d1 = dateFormat.parse(startEvent);
 			d5 = dateFormat.parse(start_end_event);
 			d2 = dateFormat.parse(endEvent);
