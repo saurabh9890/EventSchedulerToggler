@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CalendarSample</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="add_create_event_button">Add or Create Event</string>
+    <string name="general_tab">General</string>
+    <string name="toggle_tab">Toggle</string>
+    <string name="time_text">Time</string>
+    <string name="start_time">Start</string>
+    <string name="end_time">End</string>
+    <string name="frequency_text">Frequency</string>
+    <string name="hint_enter_name">Event Name</string>
+    <string name="pick_time">Time</string>
+    <string name="pick_date">Date</string>
+    <string name="display_date_time"></string>
+    <string name="date_text">Date</string>
+    <string name="from_date">From</string>
+    <string name="to_date">To</string>
+    <string name="hint_pick_from_date">Pick Start Date</string>
+    <string name="hint_pick_to_date">Pick Stop Date</string>
+    <string name="hint_start_time">Select Start Time</string>
+    <string name="hint_end_time">Select End Time</string>
+    <string name="pick_toppings">Pick your Day</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="hint_repeat_event">Repeat Event?</string>
+    <string name="next_tab">Next</string>
+    <string name="cancel_tab">Cancel</string>
+    <string name="button_next">Next</string>
+    <string name="event_list_timeline">Event List</string>
+    <string name="textview_sound_toggle_text">SOUND TOGGLES</string>
+    <string name="textview_system_toggle_text">SYSTEM TOGGLES</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_edit">Edit</string>
+    <string name="button_add_new_toogle">Add New Toggle</string>
+    <string name="button_save">Save</string>
+    <string name="button_alarm_text">Alarm</string>
+    <string name="button_ringer_text">Ringer</string>
+    <string name="button_bluetooth_text">Bluetooth</string>
+    <string name="button_wifi_text">WiFi</string>
+    <string name="back">Back</string>
+    <string name="toggle_alarm_on">Alarm Silent</string>
+    <string name="toggle_alarm_off">Alarm Normal</string>
+    <string name="toggle_media_on">Media Silent</string>
+    <string name="toggle_media_off">Media Normal</string>
+    <string name="alarm_vol">Alarm_Vol</string>
+    <string name="media_vol">Media_Vol</string>
+    <string name="toggle_wifi_on">WiFi OFF</string>
+    <string name="toggle_wifi_off">WiFi ON</string>
+    <string name="toggle_bluetooth_on">BLUETOOTH OFF</string>
+    <string name="toggle_bluetooth_off">BLUETOOTH ON</string>
+    <string name="toggle_data_on">DATA OFF</string>
+    <string name="toggle_data_off">DATA ON</string>
+    <string name="text_until">Until</string>
+    <string name="image_data_usage_off">Data Usage OFF</string>
+    <string name="image_bluetooth_off">Bluetooth OFF</string>
+    <string name="image_wifi_off">WiFi OFF</string>
+    <string name="image_media_off">Media OFF</string>
+    <string name="image_alarm_off">Alarm OFF</string>
+    <string name="image_ringer_off">Ringer OFF</string>
+    <string name="listView_summary">No Scheduled Event</string>
+    <string name="textview_calendar_events">CALENDAR EVENTS</string>
+    <string name="choose_event">Choose An Event</string>
+
+</resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/button_add_toggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:drawableLeft="@drawable/ic_action_new_dark"
+        android:text="@string/button_add_new_toogle" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="160dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:drawableLeft="@drawable/ic_action_back_dark"
+        android:text="@string/back" />
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="160dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:drawableRight="@drawable/ic_action_accept_dark"
+        android:text="@string/button_save" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/toggleButton_alarm"
+        android:layout_alignBottom="@+id/toggleButton_alarm"
+        android:layout_alignLeft="@+id/button_save"
+        android:layout_marginLeft="36dp"
+        android:textOff="@string/toggle_media_off"
+        android:textOn="@string/toggle_media_on" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button_add_toggle"
+        android:layout_marginLeft="34dp"
+        android:layout_marginTop="42dp"
+        android:textOff="@string/toggle_alarm_off"
+        android:textOn="@string/toggle_alarm_on" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/toggleButton_alarm"
+        android:layout_alignRight="@+id/toggleButton_alarm"
+        android:layout_below="@+id/toggleButton_alarm"
+        android:layout_marginTop="48dp"
+        android:textOff="@string/toggle_wifi_off"
+        android:textOn="@string/toggle_wifi_on" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/toggleButton_wifi"
+        android:layout_alignBottom="@+id/toggleButton_wifi"
+        android:layout_alignLeft="@+id/toggleButton_media"
+        android:textOff="@string/toggle_data_off"
+        android:textOn="@string/toggle_data_on" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toggleButton_wifi"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp"
+        android:textOff="@string/toggle_bluetooth_off"
+        android:textOn="@string/toggle_bluetooth_on" />
+
+</RelativeLayout>

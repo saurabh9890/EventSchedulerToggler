@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+      <Button
+        android:id="@+id/button_pick_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_action_new_event_dark"
+        android:text="@string/add_create_event_button" 
+       	android:onClick="onAddEventClick"/>
+
+        <ListView
+            android:id="@+id/listView_timeline"
+            android:layout_width="wrap_content"
+            android:layout_height="205dp"
+            android:background="@color/my_silver"
+            android:contentDescription="@string/listView_summary" />
+
+        <TextView
+            android:id="@+id/textView_calendar_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/my_black"
+            android:text="@string/textview_calendar_events"
+            android:textColor="@color/my_white" />
+
+        <ListView
+            android:id="@+id/listView_calendar_events"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:background="@color/my_silver">
+        </ListView>
+
+</LinearLayout>
+

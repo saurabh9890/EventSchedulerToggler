@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:background="@color/my_silver">
+
+
+    <TextView
+        android:id="@+id/text_event_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/text_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/text_event_name" 
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/text_repeat_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/text_start_time"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/text_until"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/text_start_time"
+        android:layout_alignBottom="@+id/text_start_time"
+        android:layout_toRightOf="@+id/text_start_time"
+        android:text="@string/text_until"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/text_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text_until"
+        android:layout_toRightOf="@+id/text_until"
+        android:layout_marginLeft="3dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    
+   <ImageView
+        android:id="@+id/imageView_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="7dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/image_data_usage_off"
+        android:src="@drawable/ic_action_network_cell_dark" />
+        
+    
+    <ImageView
+        android:id="@+id/imageView_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="7dp"
+        android:layout_toLeftOf="@+id/imageView_data"
+        android:contentDescription="@string/image_bluetooth_off"
+        android:src="@drawable/ic_action_bluetooth_dark" />
+
+    <ImageView
+        android:id="@+id/imageView_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="7dp"
+        android:layout_toLeftOf="@+id/imageView_bluetooth"
+        android:contentDescription="@string/image_wifi_off"
+        android:src="@drawable/ic_action_network_wifi_dark" />
+
+    <ImageView
+        android:id="@+id/imageView_media"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="7dp"
+        android:layout_toLeftOf="@+id/imageView_wifi"
+        android:contentDescription="@string/image_media_off"
+        android:src="@drawable/ic_action_volume_on_dark" />
+
+    <ImageView
+        android:id="@+id/imageView_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       	android:layout_marginTop="13dp"
+       	android:layout_marginLeft="7dp"
+        android:layout_toLeftOf="@+id/imageView_media"
+        android:contentDescription="@string/image_alarm_off"
+        android:src="@drawable/ic_action_alarms_dark" />
+    
+     <ImageView
+         android:id="@+id/imageView_ringer"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="7dp"
+         android:layout_marginTop="13dp"
+         android:layout_toLeftOf="@+id/imageView_alarm"
+         android:contentDescription="@string/image_ringer_off"
+         android:src="@drawable/phone_iphone" />
+   
+</RelativeLayout>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="left" >
+
+    <EditText
+        android:id="@+id/enter_event_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:hint="@string/hint_enter_name">
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/textView_to_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView_from_date"
+        android:layout_alignBottom="@+id/textView_from_date"
+        android:layout_alignRight="@+id/textView_end_time"
+        android:text="@string/to_date" />
+
+    <Button
+        android:id="@+id/button_to_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_from_date"
+        android:layout_alignBottom="@+id/button_from_date"
+        android:layout_alignLeft="@+id/button_end_time"
+        android:layout_alignParentRight="true"
+        android:hint="@string/hint_pick_to_date" />
+
+    <Button
+        android:id="@+id/button_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_start_time"
+        android:layout_alignBottom="@+id/button_start_time"
+        android:layout_alignParentRight="true"
+        android:hint="@string/hint_end_time" />
+
+    <TextView
+        android:id="@+id/textView_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_start_time"
+        android:layout_alignLeft="@+id/button_end_time"
+        android:layout_marginLeft="52dp"
+        android:text="@string/end_time" />
+
+    <Button
+        android:id="@+id/button_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_start_time"
+        android:layout_toLeftOf="@+id/button_end_time"
+        android:hint="@string/hint_start_time"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button_to_date"
+        android:layout_marginTop="16dp"
+        android:background="@color/my_black"
+        android:text="@string/frequency_text"
+        android:textColor="@color/my_white" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button_end_time"
+        android:layout_marginTop="16dp"
+        android:background="@color/my_black"
+        android:text="@string/date_text"
+        android:textColor="@color/my_white" />
+
+    <TextView
+        android:id="@+id/textView_from_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/textView_start_time"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="14dp"
+        android:text="@string/from_date" />
+
+    <Button
+        android:id="@+id/button_from_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_start_time"
+        android:layout_below="@+id/textView_from_date"
+        android:layout_toLeftOf="@+id/button_end_time"
+        android:hint="@string/hint_pick_from_date"/>
+
+    <TextView
+        android:id="@+id/textView_timeline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/enter_event_name"
+        android:layout_marginTop="14dp"
+        android:background="@color/my_black"
+        android:text="@string/time_text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/my_white" />
+
+    <TextView
+        android:id="@+id/textView_start_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_from_date"
+        android:layout_below="@+id/textView_timeline"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/start_time"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/button_repeat_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_from_date"
+        android:layout_below="@+id/textView3"
+        android:layout_marginTop="45dp"
+        android:hint="@string/hint_repeat_event"/>
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/button_from_date"
+        android:drawableRight="@drawable/ic_action_forward_dark"
+        android:onClick="showNextView"
+        android:text="@string/button_next"/>  
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_repeat_event"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/button_save"
+        android:onClick="showCancelView"
+        android:drawableLeft="@drawable/ic_action_remove_dark"
+        android:text="@string/cancel" />
+   
+</RelativeLayout>
