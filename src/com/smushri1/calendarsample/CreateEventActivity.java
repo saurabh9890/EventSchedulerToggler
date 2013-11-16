@@ -88,6 +88,11 @@ public class CreateEventActivity extends FragmentActivity implements
 	
 	public void showNextView(View v) {
 		
+	Log.d("showNextView", "Entry");	
+	Log.d("showNextView", "GeneralTabFragment.isCalendarTask --> " + GeneralTabFragment.isCalendarTask);
+	if(GeneralTabFragment.isCalendarTask == false)
+	{
+		Log.d("showNextView", "choice = 0");
 		GeneralTabFragment.bdata.setEventName(GeneralTabFragment.eventName.getText().toString());
 		
 		if(GeneralTabFragment.bdata.getEventName() == null)
@@ -154,7 +159,8 @@ public class CreateEventActivity extends FragmentActivity implements
 			AlertDialog alert11 = alert.create();
 	         alert11.show();
 		
-		}else if(GeneralTabFragment.bdata.getToDate() == null)
+		}
+		/*else if(GeneralTabFragment.bdata.getToDate() == null)
 		  {
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle("ERROR !!")
@@ -169,8 +175,27 @@ public class CreateEventActivity extends FragmentActivity implements
 			
 			AlertDialog alert11 = alert.create();
 	         alert11.show();
-		}
-		
+		}*/
+	  }
+	  else{  Log.d("showNextView", "choice = 1 --> isCalEvent = true");
+		  if(GeneralTabFragment.bean.getEventName() == null)
+		    {
+			  AlertDialog.Builder alert = new AlertDialog.Builder(this);
+				alert.setTitle("ERROR !!")
+				.setMessage("Please Select a Calendar Event.")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						CreateEventActivity.mViewPager.setCurrentItem(0);
+						}
+				});
+				
+				AlertDialog alert11 = alert.create();
+		         alert11.show();
+		  }
+		  
+	  }
 		// show ToggleTabFragment
 		CreateEventActivity.mViewPager.setCurrentItem(1);
 	}

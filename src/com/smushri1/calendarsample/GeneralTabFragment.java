@@ -1,12 +1,16 @@
 package com.smushri1.calendarsample;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 import com.smushri1.calendar.events.AdapterCalEvent;
 import com.smushri1.calendar.events.localCalendar;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -27,6 +31,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+@SuppressLint("SimpleDateFormat")
 public class GeneralTabFragment extends Fragment {
 	
 	static final String DEBUG_TAG = "GeneralTabFragment";
@@ -48,13 +53,13 @@ public class GeneralTabFragment extends Fragment {
 	public static int prevData = 0; // 0=NewData & 1=EditData
 	private static int pressedBtn = -1; // 0=from & 1=to
 	static boolean[] checked;
-	static boolean isRepeatEvent, isEditEvent;
+	static boolean isRepeatEvent, isEditEvent, isCalendarTask = false;
 	static int days;
 	static CharSequence[] daysOfWeek = new CharSequence[]{"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
 	static String displayName;
 	static String _id, title;
 	
-	static DataBean bdata;
+	static DataBean bdata, bean;
 	static StatusData statusData;
 	static Bundle extra;
 	static Context context;
@@ -76,6 +81,8 @@ public class GeneralTabFragment extends Fragment {
 		choice = extra.getInt(CHOICE_SELECTED);
 		isEditEvent = extra.getBoolean(EXTRA_BOOLEAN);
 		
+		isCalendarTask = false;
+		
 		if(choice == 0)
 		{
 			rootView = inflater.inflate(R.layout.general_tab_create,
@@ -95,11 +102,12 @@ public class GeneralTabFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		checked = new boolean[daysOfWeek.length];
+		mSelectedItems = new ArrayList<CharSequence>(); // Where we track the selected items
+		
 				
 	if(choice == 0)
 	 {
-		checked = new boolean[daysOfWeek.length];
-		mSelectedItems = new ArrayList<CharSequence>(); // Where we track the selected items
 		
 		/* DataBEan class object */
 		bdata = new DataBean();	
@@ -169,7 +177,10 @@ public class GeneralTabFragment extends Fragment {
 		}
 		
 	 }else{
-			
+		
+		 isCalendarTask = true;
+		 bean = new DataBean();
+		 
 		 b_cal_event = (Button)rootView.findViewById(R.id.button_choose_cal_event);
 		 b_cal_event.setOnClickListener(new View.OnClickListener() {
 			
@@ -223,6 +234,7 @@ public class GeneralTabFragment extends Fragment {
   }
 	
 	
+	@SuppressLint("SimpleDateFormat")
 	public void readCalData(int which)
 	{
 		 eventcursor = localCalendar.readEvents(getActivity(), which+1);
@@ -237,9 +249,7 @@ public class GeneralTabFragment extends Fragment {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 				
-					String title = eventcursor.getString(eventcursor.getColumnIndex(localCalendar.EVENT_TITLE));
-					  b_cal_event.setText(title);
-					  Log.d("Inner Loop ", " Hurrey !!! Button Text is Set ");
+					getEventRecurData(which);  // get Event Recurrence Data
 				}
 			 })
 			 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -270,6 +280,136 @@ public class GeneralTabFragment extends Fragment {
 
 	}
 
+	
+	@SuppressLint("SimpleDateFormat")
+	private void getEventRecurData(int which)
+	{
+		String title = eventcursor.getString(eventcursor.getColumnIndex(localCalendar.EVENT_TITLE));
+		Date begin = new Date(eventcursor.getLong(2));
+		Date end = new Date(eventcursor.getLong(3));
+		String repeat = eventcursor.getString(eventcursor.getColumnIndex(localCalendar.EVENT_RRULE));
+		
+		Date endDate = null;
+		String day = null;
+		
+		if(repeat != null) 
+	    {
+			isRepeatEvent = true;
+			String prefix = "UNTIL";
+	    
+			if((repeat.indexOf(prefix)) != -1)
+			{ 
+				int left = repeat.indexOf(prefix);
+				String sub = repeat.substring(left+6, left+22);
+				
+				SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");         
+				try {
+					endDate = format.parse(sub);
+				} catch (ParseException e) {
+					Log.d(TAG, "Until Date is Not in correct form");
+		    		e.printStackTrace();
+				}
+			}
+			
+			if((repeat.indexOf("FREQ")) != -1)
+			{
+				int l = repeat.indexOf("FREQ");
+				String freq = repeat.substring(l+5, l+10);
+				Log.d(TAG, "freq: "+ freq);
+				mSelectedItems = new ArrayList<CharSequence>();
+				
+				if(freq.equals("DAILY"))
+				{
+					int d = repeat.indexOf("BYDAY");
+					 day = repeat.substring(d+6);
+					Log.d(TAG, "Daily BYDAY: "+ day);
+					
+					mSelectedItems.clear();
+					if(day != null)
+					{
+						StringTokenizer token = new StringTokenizer(day,",");
+						while(token.hasMoreElements())
+						{
+						  mSelectedItems.add(token.nextToken());
+						}
+						Log.d(TAG, "Daily mSelectedItems: "+ mSelectedItems);
+					}	
+					
+				 }
+				
+				if(freq.equals("WEEKL"))
+				{
+					int d = repeat.indexOf("BYDAY");
+					 day = repeat.substring(d+6);
+					Log.d(TAG, "Weekly BYDAY: "+ day);
+					
+					mSelectedItems.clear();
+					if(day != null)
+					{
+						StringTokenizer token = new StringTokenizer(day,",");
+						while(token.hasMoreElements())
+						{
+						  mSelectedItems.add(token.nextToken());
+						}
+						Log.d(TAG, "Weekly mSelectedItems: "+ mSelectedItems);
+					}	
+					
+				 }
+				
+				
+				if(freq.equals("MONTH"))
+				{
+					int d = repeat.indexOf("BYDAY");
+					 day = repeat.substring(d+6);
+					Log.d(TAG, " Monthly BYDAY: "+ day);
+					
+					mSelectedItems.clear();
+					if(day != null)
+					{
+						StringTokenizer token = new StringTokenizer(day,",");
+						while(token.hasMoreElements())
+						{
+						  mSelectedItems.add(token.nextToken());
+						}
+						Log.d(TAG, "Monthly mSelectedItems: "+ mSelectedItems);
+					}	
+					
+				 }
+				
+			 }
+			
+	     }
+		 
+		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy zzz");
+		String eve_begin = formatter.format(begin);
+		String eve_end = null;
+		
+		if(endDate != null)
+			eve_end = formatter.format(endDate);
+	
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+		String stTime = sdf.format(begin);
+		String endTime = sdf.format(end);
+		
+		  b_cal_event.setText(title);
+		  
+		  bean.setEventName(title);
+		  bean.setStartTime(stTime);
+		  bean.setEndTime(endTime);
+		  bean.setFromDate(eve_begin);
+		  bean.setToDate(eve_end);
+		  bean.setRepeatEvent(day);
+		  
+		  
+		  Log.d("Inner Loop ", " Hurrey !!! Button Text is Set ");
+		  Log.d("Inner Loop", " Cal Event Name by bean: " + bean.getEventName());
+		  Log.d("Inner Loop", " Cal Start Time by bean: " + bean.getStartTime());
+		  Log.d("Inner Loop", " Cal End Time by bean: " + bean.getEndTime());
+		  Log.d("Inner Loop", " Cal From Date by bean: " + bean.getFromDate());
+		  Log.d("Inner Loop", " Cal To Date by bean: " + bean.getToDate());
+		  Log.d("Inner Loop", " Cal Repeat Event by bean: " + bean.getRepeatEvent());
+	}
+	
 	
 	
 	@SuppressWarnings("static-access")

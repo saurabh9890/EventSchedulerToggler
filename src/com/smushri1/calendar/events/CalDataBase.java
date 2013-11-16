@@ -1,105 +1,148 @@
 package com.smushri1.calendar.events;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.smushri1.calendarsample.DataBean;
 
 public class CalDataBase {
-
-	private static final String TAG = " Cal_DataBase";
+	private static final String TAG = " Calender CalDataBase";
 	
 	public static final int DB_VERSION = 1;
-	public static final String DB_NAME = "calendar.db";
-	public static final String TABLE_CALENDARS = "table_calendars";
-	public static final String TABLE_EVENTS = "table_events";
-	public static final String TABLE_INSTANCES = "table_instances";
+	public static final String DB_NAME = "task.db";
+	public static final String CAL_TABLE = "calevent";
 	
-	public static final String CAL_ID = "_id";
-	public static final String CAL_NAME = "name";
-	public static final String CAL_CALENDAR_DISPLAY_NAME = "calendar_displayName";
-	public static final String CAL_VISIBLE = "visible";
-	public static final String CAL_SYNC_EVENTS = "sync_events";
+	public static String C_ID = "_id";
+	public static final String C_EVENT_NAME = "_name";
+	public static final String C_START_TIME = "started_at";
+	public static final String C_END_TIME = "ended_at";
+	public static final String C_FROM_DATE = "from_date";
+	public static final String C_TO_DATE = "to_date";
+	public static final String C_REPEAT_EVENT = "repeat_event";
+	public static final String C_RINGER_MODE = "ringer_mode";
+	public static final String C_MEDIA_VOL = "media_vol";
+	public static final String C_ALARM_VOL = "alarm_vol";
 	
-	public static final String EVENT_ID = "event_id";
-	public static final String EVENT_DTSTART = "dtstart";
-	public static final String EVENT_DTEND = "dtend";
-	public static final String EVENT_DURATION = "duration";
-	public static final String EVENT_RRULE = "rrule";
-	public static final String EVENT_RDATE = "rdate";
-	public static final String EVENT_TIMEZONE = "eventTimezone";
-	public static final String EVENT_TITLE = "title";
-	public static final String EVENT_DESCRIPTION = "description";
-	public static final String EVENT_ALL_DAY = "allDay";
-
-	public static final String I_ID = "i_id";
-	public static final String I_BEGIN = "begin";
-	public static final String I_END = "end";
-	public static final String I_END_DAY = "endDay";
-	public static final String I_END_MINUTE = "endMinute";
-	public static final String I_START_DAY = "startDay";
-	public static final String I_START_MINUTE = "startMinute";
-	
+	public static final String C_WIFI_MODE = "wifi_mode";
+	public static final String C_BLUETOOTH_MODE = "bluetooth_mode";
+	public static final String C_DATA_MODE = "data_mode";
+	public static final String C_USER = "user_name";
 	
 	Context context;
-	CalDbHelper caldbHelper;
-	SQLiteDatabase db;
+	DbHelper caldbHelper;
+	SQLiteDatabase caldb;
 	Cursor cursor;
-	//DataBean bean;
+	DataBean bean;
 	
 	
 	public CalDataBase(Context context){
 		 this.context = context;
-		  caldbHelper = new CalDbHelper();
+		  caldbHelper = new DbHelper();
+	}
+
+	public long insert(DataBean bean){		
+		ContentValues values = new ContentValues();
+		values.put(C_EVENT_NAME, bean.getEventName());
+		values.put(C_START_TIME, bean.getStartTime());
+		values.put(C_END_TIME, bean.getEndTime());
+		values.put(C_FROM_DATE, bean.getFromDate());
+		values.put(C_TO_DATE, bean.getToDate());
+		values.put(C_REPEAT_EVENT, bean.getRepeatEvent());
+		values.put(C_RINGER_MODE, bean.getRingerMode());
+		values.put(C_MEDIA_VOL, bean.getMediaVol());
+		values.put(C_ALARM_VOL, bean.getAlarmVol());
+		values.put(C_WIFI_MODE, bean.getWifi());
+		values.put(C_BLUETOOTH_MODE, bean.getBluetooth());
+		values.put(C_DATA_MODE, bean.getData());
+		
+		caldb = caldbHelper.getWritableDatabase();
+		long rowID = caldb.insertWithOnConflict(CAL_TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+		
+		return rowID;
 	}
 	
 	
+	 public Cursor query(){		  
+		  caldb = caldbHelper.getReadableDatabase();		  
+		 // cursor = caldb.query(TABLE, null, null, null, null, null, C_START_TIME + " ASC");
+		  cursor = caldb.query(CAL_TABLE, null, null, null, null, null, null);
+	
+		  return cursor;
+	  }
+	
+	 
+	public void update(String id, DataBean bean){		
+		Log.d(TAG, "Query Updation....!!!");
+		
+		ContentValues values = new ContentValues();
+		values.put(C_EVENT_NAME, bean.getEventName());
+		values.put(C_START_TIME, bean.getStartTime());
+		values.put(C_END_TIME, bean.getEndTime());
+		values.put(C_FROM_DATE, bean.getFromDate());
+		values.put(C_TO_DATE, bean.getToDate());
+		values.put(C_REPEAT_EVENT, bean.getRepeatEvent());
+		values.put(C_RINGER_MODE, bean.getRingerMode());
+		values.put(C_MEDIA_VOL, bean.getMediaVol());
+		values.put(C_ALARM_VOL, bean.getAlarmVol());
+		values.put(C_WIFI_MODE, bean.getWifi());
+		values.put(C_BLUETOOTH_MODE, bean.getBluetooth());
+		values.put(C_DATA_MODE, bean.getData());
+		
+		caldb = caldbHelper.getWritableDatabase();
+		caldb.updateWithOnConflict(CAL_TABLE, values, C_ID + "=" + id, null, SQLiteDatabase.CONFLICT_IGNORE);
+		
+		Log.d(TAG, "Query Updated!!!");
+	}
 	
 	
-	class CalDbHelper extends SQLiteOpenHelper{
+	// long id
+	public void delete(long id){
+		Log.d(TAG, "Query Deleting row id : " + id);
+		
+		caldb = caldbHelper.getWritableDatabase();
+		caldb.delete(CAL_TABLE, C_ID + "=" + id , null);
+	
+		Log.d(TAG, "Query Deleted!!!");
+	}
+	
+	
+	public void open() throws SQLException {
+	    caldb = caldbHelper.getWritableDatabase();
+	  }
 
-		public CalDbHelper() {
+	
+	  public void close() {
+		  caldbHelper.close();
+	  }
+
+	
+	class DbHelper extends SQLiteOpenHelper{
+
+		public DbHelper() {
 			super(context, DB_NAME, null, DB_VERSION);
-			
-		//	 DB_PATH = context.getDatabasePath(DB_NAME).getPath();
 		}
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+			String sql = String.format("create table %s" + 
+					"(%s INTEGER primary key AUTOINCREMENT, %s text, %s text, %s text, %s text, %s text, %s text, %s text, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER, %s INTEGER)", 
+					CAL_TABLE, C_ID , C_EVENT_NAME, C_START_TIME, C_END_TIME, C_FROM_DATE, C_TO_DATE, C_REPEAT_EVENT, C_RINGER_MODE, C_MEDIA_VOL, C_ALARM_VOL, C_WIFI_MODE, C_BLUETOOTH_MODE, C_DATA_MODE);
 			
-			String calendar_sql = String.format("create table %s" + 
-					"(%s long primary key AUTOINCREMENT, %s text, %s text, %s int, %s int)", 
-					TABLE_CALENDARS, CAL_ID, CAL_NAME, CAL_CALENDAR_DISPLAY_NAME, CAL_VISIBLE, CAL_SYNC_EVENTS);
-			Log.d(TAG, "OnCreate with CALENDAR_SQL: "+ calendar_sql);
-			
-			
-			String events_sql = String.format("create table %s" + 
-					"(%s long primary key AUTOINCREMENT, %s long foreign key, %s long, %s long, %s text, %s text, %s text, %s text, %s text, %s text, %s int)", 
-					TABLE_EVENTS, EVENT_ID , CAL_ID, EVENT_DTSTART, EVENT_DTEND, EVENT_DURATION, EVENT_RRULE, EVENT_RDATE, EVENT_TIMEZONE, EVENT_TITLE, EVENT_DESCRIPTION, EVENT_ALL_DAY);
-			Log.d(TAG, "OnCreate with EVENTS_SQL: "+ events_sql);
 		
-			
-			String instances_sql = String.format("create table %s" + 
-					"(%s long primary key AUTOINCREMENT, %s long foreign key, %s long, %s long, %s int, %s int, %s int, %s int)", 
-					TABLE_INSTANCES, I_ID, EVENT_ID , I_BEGIN, I_END, I_END_DAY, I_END_MINUTE, I_START_DAY, I_START_MINUTE);
-			Log.d(TAG, "OnCreate with INSTANCES_SQL: "+ instances_sql);	
-			
-			
-			db.execSQL(calendar_sql);
-			db.execSQL(events_sql);
-			db.execSQL(instances_sql);			
+			Log.d(TAG, "OnCreate with SQL: "+ sql);			
+			db.execSQL(sql);			
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			// ALTER TABLE statement
-			db.execSQL("drop table "+ TABLE_CALENDARS);
-			db.execSQL("drop table "+ TABLE_EVENTS);
-			db.execSQL("drop table "+ TABLE_INSTANCES);
+			db.execSQL("drop table if exists"+ CAL_TABLE);
 			onCreate(db);			
 		}	
 	}
-	
 }

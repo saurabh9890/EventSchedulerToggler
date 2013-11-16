@@ -26,21 +26,59 @@
         android:layout_alignBaseline="@+id/textView_event_begin"
         android:layout_alignBottom="@+id/textView_event_begin"
         android:layout_toRightOf="@+id/textView_event_begin" />
+    
+
+    <TextView
+        android:id="@+id/textView_event_allDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView_event_begin"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+     <TextView
+        android:id="@+id/textView_event_end_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView_event_allDay"
+        android:layout_alignBottom="@+id/textView_event_allDay"
+        android:layout_toRightOf="@+id/textView_event_allDay" />
+     
+     
+     <TextView
+        android:id="@+id/textView_event_rrule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_event_allDay"
+       	android:textAppearance="?android:attr/textAppearanceSmall" />
+     
+
+</RelativeLayout>
+
+    
+<!-- 
+    <TextView
+        android:id="@+id/textView_event_end_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/textView_event_allDay"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/textView_event_rrule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView_event_begin"
+        android:layout_marginTop="19dp"
+        android:layout_toLeftOf="@+id/textView_event_end"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/textView_event_allDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="45dp"
-        android:layout_alignTop="@+id/textView_event_end" />
-
-</RelativeLayout>
+        android:layout_above="@+id/textView_event_rrule"
+        android:layout_alignParentLeft="true"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+ -->

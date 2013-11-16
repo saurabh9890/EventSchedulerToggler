@@ -27,6 +27,8 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.smushri1.calendar.events.CalDataBase;
+
 public class ToggleTabFragment extends Fragment{
 
 	static final String DEBUG_TAG = "TogglesMenuDialogFragment";
@@ -41,6 +43,7 @@ public class ToggleTabFragment extends Fragment{
 	static String startEvent, endEvent;
 	static AlertDialog alert_save;
 	static StatusData statusData;
+	static CalDataBase calDB;
 	static DataBean bdata;
 	
 	private static ToggleButton toggle_alarm, toggle_media, toggle_wifi, toggle_bluetooth, toggle_data;
@@ -137,41 +140,76 @@ public class ToggleTabFragment extends Fragment{
 	@SuppressLint("SimpleDateFormat")
 	private static long initPreviousGeneralData(){
 		
-		
-		String startTime = GeneralTabFragment.bstart_time.getText().toString();
-		String endTime = GeneralTabFragment.bend_time.getText().toString();
-		String fromDate = GeneralTabFragment.bfrom_date.getText().toString();
-		String toDate = GeneralTabFragment.bto_date.getText().toString();
-		String repeatEvent = GeneralTabFragment.bday_picker.getText().toString();
-		
-		String ringer = GeneralTabFragment.bdata.getRingerMode();
-		int media_vol = GeneralTabFragment.bdata.getMediaVol();
-		int alarm_vol = GeneralTabFragment.bdata.getAlarmVol();
-		int wifi = GeneralTabFragment.bdata.getWifi();
-		int blue = GeneralTabFragment.bdata.getBluetooth();
-		int data = GeneralTabFragment.bdata.getData();
-		
-		GeneralTabFragment.bdata.setStartTime(startTime);
-		GeneralTabFragment.bdata.setEndTime(endTime);
-		GeneralTabFragment.bdata.setFromDate(fromDate);
-		GeneralTabFragment.bdata.setToDate(toDate);
-		GeneralTabFragment.bdata.setRepeatEvent(repeatEvent);
-			
-		mItems.clear();
-		
-		if(repeatEvent != null)
+	String startTime, endTime, fromDate, toDate, repeatEvent;
+	
+		if(GeneralTabFragment.isCalendarTask == false)
 		{
-			StringTokenizer token = new StringTokenizer(repeatEvent, " ");
-			while(token.hasMoreElements()){
-				mItems.add(token.nextToken());
-				}
-		}
+			 startTime = GeneralTabFragment.bstart_time.getText().toString();
+			 endTime = GeneralTabFragment.bend_time.getText().toString();
+			 fromDate = GeneralTabFragment.bfrom_date.getText().toString();
+			 toDate = GeneralTabFragment.bto_date.getText().toString();
+			 repeatEvent = GeneralTabFragment.bday_picker.getText().toString();
+		
+			String ringer = GeneralTabFragment.bdata.getRingerMode();
+			int media_vol = GeneralTabFragment.bdata.getMediaVol();
+			int alarm_vol = GeneralTabFragment.bdata.getAlarmVol();
+			int wifi = GeneralTabFragment.bdata.getWifi();
+			int blue = GeneralTabFragment.bdata.getBluetooth();
+			int data = GeneralTabFragment.bdata.getData();
+		
+			GeneralTabFragment.bdata.setStartTime(startTime);
+			GeneralTabFragment.bdata.setEndTime(endTime);
+			GeneralTabFragment.bdata.setFromDate(fromDate);
+			GeneralTabFragment.bdata.setToDate(toDate);
+			GeneralTabFragment.bdata.setRepeatEvent(repeatEvent);
+		  
+		}else{
+			 // isCalendarTask == true
+			 startTime = GeneralTabFragment.bean.getStartTime().toString();
+			 endTime = GeneralTabFragment.bean.getEndTime().toString();
+			 fromDate = GeneralTabFragment.bean.getFromDate().toString();
+			 
+			  if(GeneralTabFragment.bean.getToDate() == null)
+			  {	 
+				 Date begin = new Date();
+				 SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy zzz");
+				 toDate = formatter.format(begin);
+			  }
+			 else{
+				 toDate = GeneralTabFragment.bean.getToDate();
+			  }
+			  
+			  if(GeneralTabFragment.bean.getRepeatEvent() == null)
+			  {
+				  repeatEvent = "";
+			  }
+			  else{
+				  repeatEvent = GeneralTabFragment.bean.getRepeatEvent();
+			  }
+			  
+			 String ringer = GeneralTabFragment.bean.getRingerMode();
+			 int media_vol = GeneralTabFragment.bean.getMediaVol();
+			 int alarm_vol = GeneralTabFragment.bean.getAlarmVol();
+			 int wifi = GeneralTabFragment.bean.getWifi();
+			 int blue = GeneralTabFragment.bean.getBluetooth();
+			 int data = GeneralTabFragment.bean.getData();
+		  }
+			mItems.clear();
+		
+			if(repeatEvent != null)
+			{
+				//isRepeatEvent = true;
+				StringTokenizer token = new StringTokenizer(repeatEvent, " ");
+				while(token.hasMoreElements()){
+					mItems.add(token.nextToken());
+					}
+			}
 		
 		startEvent = new String(new StringBuilder().append(fromDate).append(" ").append(startTime));		
         endEvent = new String(new StringBuilder().append(toDate).append(" ").append(endTime));
 		String start_end_event = new String(new StringBuilder().append(fromDate).append(" ").append(endTime));
 		 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm", Locale.getDefault());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy zzz hh:mm a", Locale.getDefault());
       	try {
 				d1 = dateFormat.parse(startEvent);
 				d5 = dateFormat.parse(start_end_event);
@@ -252,9 +290,11 @@ public class ToggleTabFragment extends Fragment{
 		
 	
 	public void showNextView(View v) 
-	{	
-		if(GeneralTabFragment.bdata.getRingerMode() == null)
-		{
+	{
+	 if(GeneralTabFragment.isCalendarTask == false)	
+	  {	
+		 if(GeneralTabFragment.bdata.getRingerMode() == null)
+	     {
 			AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 			alert.setTitle("ERROR !!")
 			.setMessage("Please Select Ringer Toggling mode")
@@ -277,6 +317,7 @@ public class ToggleTabFragment extends Fragment{
 		  if(System.currentTimeMillis() <= Startmiliseconds && Startmiliseconds < endmiliseconds)
 		  {
 			  statusData = new StatusData(getActivity()); 
+			//  CalDataBase = new CalDataBase(getActivity());
 			  Log.d("showNextView <-->", " Inner loop 1 ");
 			  if(GeneralTabFragment.prevData == 0)
 			  {
@@ -296,7 +337,6 @@ public class ToggleTabFragment extends Fragment{
 				
 			  if(GeneralTabFragment.prevData == 1)
 			  {
-				  Log.d("showNextView <-->", " Inner loop 1.2 ");
 				  try {
 				   		statusData.open();
 				   		statusData.update(EditPrevData.id,GeneralTabFragment.bdata);
@@ -315,7 +355,6 @@ public class ToggleTabFragment extends Fragment{
 			  Log.d("OnNext Button", " MainActivity view showing registered Event List");
 	      }
 		  else{
-			  Log.d("showNextView <-->", " 2  --> Please Enter Correct Date & Time.");
 			  AlertDialog.Builder alert = new AlertDialog.Builder(context);
 				alert.setTitle("ERROR !!")
 				.setMessage("Please Enter Correct Date & Time.")
@@ -330,9 +369,98 @@ public class ToggleTabFragment extends Fragment{
 				AlertDialog alert11 = alert.create();
 		         alert11.show();
 		  }
-		}  
+		} 
+	 
+	}
+	else{
+		
+		CalShowNextView();
+	}	
  }
 	
+	
+	public void CalShowNextView(){
+		
+		Log.d("CalShowNextView"," Entry");
+		
+		 if(GeneralTabFragment.bean.getRingerMode() == null)
+	     {
+			AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+			alert.setTitle("ERROR !!")
+			.setMessage("Please Select Ringer Toggling mode")
+			.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+					}
+			});
+			
+			alert_save = alert.create();
+			alert_save.show();
+		}
+		else 
+		{	
+		  Log.d("CalShowNextView <-->", " 1 ");
+		  Startmiliseconds = initPreviousGeneralData();
+			
+		  if(System.currentTimeMillis() <= Startmiliseconds && Startmiliseconds <= endmiliseconds)
+		  {
+			  calDB = new CalDataBase(getActivity());
+			  Log.d("CalShowNextView <-->", " Inner loop 1 ");
+			  if(GeneralTabFragment.prevData == 0)
+			  {
+				  Log.d("CalShowNextView <-->", " Inner loop 1.1 ");
+				  try {
+					   calDB.open();
+					   rowID = calDB.insert(GeneralTabFragment.bean);
+					   Log.d("Calendar Data Inserted into DB", " Hurrey....!!!! Row ID: " + rowID);
+					   
+				   		} catch (Exception e) {
+				   			e.printStackTrace();
+				   		}
+			  			finally{
+			  				calDB.close();
+			  			}
+			  	}	
+				
+			  if(GeneralTabFragment.prevData == 1)
+			  {
+				  try {
+					  	calDB.open();
+					  	calDB.update(EditPrevData.id,GeneralTabFragment.bean);
+				   		Log.d("Calendar Data Updated into DB", " Hurrey....!!!! ");
+			   			} catch (Exception e) {
+			   				e.printStackTrace();
+			   				}
+			   			finally{
+			   				calDB.close();
+			   				}
+		      	}
+		
+		   
+			  startRinger(alarmVol, mode, currentVolume, wifiState, bluetoothState, dataState);  // setting alarms to do toggling action.	
+			  getActivity().finish();
+			  Log.d("OnNext Calendar Button", " Calendar -> MainActivity view showing registered Calendar Event List");
+	      }
+		  else{
+			  AlertDialog.Builder alert = new AlertDialog.Builder(context);
+				alert.setTitle("ERROR !!")
+				.setMessage("Please Enter Correct Date & Time.")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						CreateEventActivity.mViewPager.setCurrentItem(0);
+						}
+				});
+				
+				AlertDialog alert11 = alert.create();
+		         alert11.show();
+		  }
+		} 
+	 
+	}
 
 	
 	
@@ -368,12 +496,15 @@ public class ToggleTabFragment extends Fragment{
 								if(toggle_alarm.isChecked())
 								{	
 									alarmVol = audio.getStreamVolume(AudioManager.STREAM_ALARM);
-									GeneralTabFragment.bdata.setAlarmVol(alarmVol);
+									if(GeneralTabFragment.isCalendarTask == true)
+										GeneralTabFragment.bean.setAlarmVol(alarmVol);
+									else
+										GeneralTabFragment.bdata.setAlarmVol(alarmVol);
 								  
 								}
 							}
 						});
-						GeneralTabFragment.bdata.setAlarmVol(alarmVol);
+						//GeneralTabFragment.bdata.setAlarmVol(alarmVol);
 						break;
 		        	 	
 					case 1 : // Ringer
@@ -385,7 +516,11 @@ public class ToggleTabFragment extends Fragment{
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								
-								GeneralTabFragment.bdata.setRingerMode(ringer_items[which]);
+								if(GeneralTabFragment.isCalendarTask == true)
+									GeneralTabFragment.bean.setRingerMode(ringer_items[which]);
+								else
+									GeneralTabFragment.bdata.setRingerMode(ringer_items[which]);
+								
 								if(ringer_items[which] == "Normal")
 								{
 									mode = mAudioManager.RINGER_MODE_NORMAL;
@@ -421,11 +556,14 @@ public class ToggleTabFragment extends Fragment{
 								if(toggle_media.isChecked())
 								{	
 									currentVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-									GeneralTabFragment.bdata.setMediaVol(currentVolume);
+									if(GeneralTabFragment.isCalendarTask == true)
+										GeneralTabFragment.bean.setMediaVol(currentVolume);
+									else
+										GeneralTabFragment.bdata.setMediaVol(currentVolume);
 								}
 							}
 						});
-						GeneralTabFragment.bdata.setMediaVol(currentVolume);
+						//GeneralTabFragment.bdata.setMediaVol(currentVolume);
 						break;
 
 					case 3 : // wi-fi
@@ -440,11 +578,14 @@ public class ToggleTabFragment extends Fragment{
 								{	
 									//wifi.setWifiEnabled(false);
 									wifiState = wifi.getWifiState();
-									GeneralTabFragment.bdata.setWifi(wifiState);
+									if(GeneralTabFragment.isCalendarTask == true)
+										GeneralTabFragment.bean.setWifi(wifiState);
+									else
+										GeneralTabFragment.bdata.setWifi(wifiState);
 								}
 							}
 						});
-						GeneralTabFragment.bdata.setWifi(wifiState);
+						//GeneralTabFragment.bdata.setWifi(wifiState);
 						break;
 						
 					case 4 : // bluetooth
@@ -458,13 +599,16 @@ public class ToggleTabFragment extends Fragment{
 								if(toggle_bluetooth.isChecked())
 								{	
 									bluetoothState = blue.getState();
-									GeneralTabFragment.bdata.setBluetooth(bluetoothState);
+									if(GeneralTabFragment.isCalendarTask == true)
+										GeneralTabFragment.bean.setBluetooth(bluetoothState);
+									else
+										GeneralTabFragment.bdata.setBluetooth(bluetoothState);
 									
 								}
 							}
 						});
 						
-						GeneralTabFragment.bdata.setBluetooth(bluetoothState);
+						//GeneralTabFragment.bdata.setBluetooth(bluetoothState);
 						break;
 						
 					case 5 : // Data
@@ -478,12 +622,15 @@ public class ToggleTabFragment extends Fragment{
 								if(toggle_data.isChecked())
 								{	
 									dataState = telephonyManager.getDataState();
-									GeneralTabFragment.bdata.setData(dataState);
+									if(GeneralTabFragment.isCalendarTask == true)
+										GeneralTabFragment.bean.setData(dataState);
+									else
+										GeneralTabFragment.bdata.setData(dataState);
 									
 								}
 							 }
 						});
-						GeneralTabFragment.bdata.setData(dataState);
+						//GeneralTabFragment.bdata.setData(dataState);
 						break;
 					}					
 				}

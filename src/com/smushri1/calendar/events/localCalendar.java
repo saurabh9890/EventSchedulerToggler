@@ -1,6 +1,10 @@
 package com.smushri1.calendar.events;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -33,7 +37,10 @@ public class localCalendar {
 	public static final String I_START_DAY = "startDay";
 	public static final String I_START_MINUTE = "startMinute";
 	
+	public static ArrayList<CharSequence> mSelectedItems;
+	static String title, repeat, until;
 	
+	@SuppressWarnings("unused")
 	public static Cursor readCalendar(Context context) 
 	{
 		ContentResolver contentResolver = context.getContentResolver();
@@ -63,9 +70,11 @@ public class localCalendar {
 		
 		
 		
+		@SuppressWarnings("unused")
 		@SuppressLint("SimpleDateFormat")
 		public static Cursor readEvents(Context context, int id){
 
+			mSelectedItems = new ArrayList<CharSequence>();
 			// For each calendar, display all the events from the previous week to the end of next week.		
 			
 			String calID = Integer.toString(id);
@@ -92,10 +101,8 @@ public class localCalendar {
 					   final Date end = new Date(eventCursor.getLong(3));
 					   final Boolean allDay = !eventCursor.getString(4).equals("0");
 					   final String repeat = eventCursor.getString(5);
-					   
-					   
-					   Log.d(TAG, "Event_ID: " + eve_id + "Title: " + title + " Begin: " + begin + " End: " + end +
-							" All Day: " + allDay + "\n Repeat Day: " + repeat);
+					
+						 	
 				   }while(eventCursor.moveToNext());
 				   
 				   return eventCursor;

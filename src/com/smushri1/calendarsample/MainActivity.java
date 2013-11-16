@@ -1,5 +1,8 @@
 package com.smushri1.calendarsample;
 
+import com.smushri1.calendar.events.CalDataBase;
+import com.smushri1.calendar.events.MyCalendarAdapter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,9 +23,12 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 	static final String DEBUG_TAG = "AddCreateEventDialog";
 	
 	ListView list, list_calendar;
-	Cursor cursor;
+	Cursor cursor, calCursor;
 	static MyAdapter adapter;
+	static MyCalendarAdapter calAdapter;
 	StatusData statusData;
+	CalDataBase calDB;
+	static boolean isCalEvent;
 	
 	public static final String CHOICE_SELECTED = "com.smushri1.calendarsample.choice_selected";
 	protected static final String ID_EXTRA = "com.smushri1.calendarsample.C_ID";
@@ -41,6 +47,24 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG, "onResume");
+		
+		// updating Calendar List View
+				calDB = new CalDataBase(getApplicationContext());
+				list_calendar = (ListView)findViewById(R.id.listView_calendar_events);
+				
+				calDB.open();
+				calCursor = calDB.query();
+				
+				calAdapter = new MyCalendarAdapter(this, calCursor, false);
+				list_calendar.setAdapter(calAdapter);
+			//	list_calendar.setBackgroundColor(Color.GRAY);
+				list_calendar.setLongClickable(true);
+				isCalEvent = true;
+				list_calendar.setOnItemLongClickListener(this);
+				
+				updateCallist();
+				calDB.close();
+		
 	
 	}
 
@@ -57,12 +81,31 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 		
 		adapter = new MyAdapter(this, cursor, false);
 		list.setAdapter(adapter);
-		list.setBackgroundColor(Color.GRAY);
+		//list.setBackgroundColor(Color.GRAY);
 		list.setLongClickable(true);
+		isCalEvent = false;
 		list.setOnItemLongClickListener(this);
 	
 		updatelist();
 		statusData.close();
+		
+		
+		/*// updating Calendar List View
+		calDB = new CalDataBase(getApplicationContext());
+		list_calendar = (ListView)findViewById(R.id.listView_calendar_events);
+		
+		calDB.open();
+		calCursor = calDB.query();
+		
+		calAdapter = new MyCalendarAdapter(this, calCursor, false);
+		list_calendar.setAdapter(calAdapter);
+		list_calendar.setBackgroundColor(Color.GRAY);
+		list_calendar.setLongClickable(true);
+		isCalEvent = true;
+		list_calendar.setOnItemLongClickListener(this);
+		
+		updateCallist();
+		calDB.close();*/
 		
 	}
 
@@ -105,16 +148,6 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 					Intent addCalEvent = new Intent(getApplicationContext(),CreateEventActivity.class);
 					addCalEvent.putExtra(CHOICE_SELECTED, choice);
 					startActivity(addCalEvent);
-					
-					
-				/*	Cursor eventcursor = localCalendar.readCalendar(getApplicationContext());
-					list_calendar = (ListView) findViewById(R.id.listView_calendar_events);
-					
-					Log.d("Option 2", " event cursor returned: " + eventcursor);
-					MyCalendarAdapter cal_adapter = new MyCalendarAdapter(getApplicationContext(), eventcursor, false);
-					list_calendar.setAdapter(cal_adapter);
-					list_calendar.setBackgroundColor(color.darker_gray);
-				*/
 					break;
 				}
 				
@@ -149,13 +182,23 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							  statusData.open();
+							if(isCalEvent == false)
+							{ statusData.open();
 						      UnScheduleBroadcastReceiver.setDeleteEvent(view.getContext(), position);
 						      Log.d(TAG, "Delete intent fired");
 						      
 					    	  statusData.delete(ITEM);
 					    	  updatelist();
+						     }
+							else{
+								calDB.open();
+								UnScheduleBroadcastReceiver.setDeleteEvent(view.getContext(), position);
+								Log.d(TAG, "Delete Cal Event intent fired");
+							      
+						    	calDB.delete(ITEM);
+						    	updateCallist();
 							}
+						}
 					})
 					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 						
@@ -169,7 +212,9 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 			         alert11.show();
 			 } catch (Exception ex) { }
 		      finally {
+		    	  if(isCalEvent == false)
 		    	  statusData.close();
+		    	  calDB.close();
 		      }
 		  }
 		 });
@@ -190,6 +235,12 @@ public class MainActivity extends Activity implements OnItemLongClickListener {
 	protected void updatelist() {
 		cursor = statusData.query();
 		adapter.changeCursor(cursor);
+	}
+	
+	
+	protected void updateCallist() {
+		calCursor = calDB.query();
+		calAdapter.changeCursor(calCursor);
 	}
 	 
 }
